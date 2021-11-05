@@ -4,7 +4,7 @@ class Node;
 
 class Node {
 public:
-    enum {
+    enum Color {
         Black,
         Red
     };
@@ -147,6 +147,13 @@ int main() {
         }
     }
 
-
+    ColoredBinaryTree tree;
+    tree.Head = &nodes[root_index - 1];
+    if (tree.isCorrect()) {
+        std::cout << "YES";
+    }
+    else {
+        std::cout << "NO";
+    }
     return 0;
 }
