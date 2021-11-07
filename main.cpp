@@ -86,6 +86,7 @@ protected:
     }
 
 public:
+
     Node* Head;
 
     bool isCorrect () {
@@ -110,7 +111,7 @@ int main() {
         return 0;
     }
     std::cin >> root_index;
-    Node nodes[nodes_count];
+    Node* nodes = new Node[nodes_count];
     for (int i = 0; i < nodes_count; ++i) {
         std::cin >> node_index;
         std::cin >> nodes[node_index - 1].key;
@@ -150,5 +151,6 @@ int main() {
     else {
         std::cout << "NO";
     }
+    delete[] nodes;
     return 0;
 }
