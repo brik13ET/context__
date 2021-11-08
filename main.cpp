@@ -73,9 +73,9 @@ protected:
         if (n != nullptr) {
             bool greater_value;
             bool greater_current = false;
-            greater_value = isRightGreaterIterator(n->right, value);
+            greater_value = isLeftLess(n);
             if (greater_value) {
-                greater_current = isRightGreaterIterator(n->right, n->key);
+                greater_current = isRightGreater(n);
             }
             return n->key > value && greater_value && greater_current;
         }
