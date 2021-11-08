@@ -60,13 +60,13 @@ protected:
             if (less_value) {
                 less_current = isLeftLessIterator(n->left, n->key);
             }
-            return less_value && less_current;
+            return n->key < value && less_value && less_current;
         }
         return true;
     }
 
     bool isLeftLess(Node* n) {
-        return isLeftLessIterator(n, n->key);
+        return isLeftLessIterator(n->left, n->key);
     }
 
     bool isRightGreaterIterator(Node *n, int value) {
@@ -77,7 +77,7 @@ protected:
             if (greater_value) {
                 greater_current = isRightGreaterIterator(n->right, n->key);
             }
-            return greater_value && greater_current;
+            return n->key > value && greater_value && greater_current;
         }
         return true;
     }
