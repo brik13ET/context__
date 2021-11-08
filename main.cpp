@@ -1,12 +1,8 @@
 #include <iostream>
-#include <string>
 
 class Node {
 public:
-    enum Color {
-        Black,
-        Red
-    };
+    enum Color { Black, Red };
     int key;
     Node* left;
     Node* right;
@@ -21,82 +17,70 @@ public:
 
 class ColoredBinaryTree {
 protected:
-    void DestructorIterator (Node* n) {
+    void destructorIterator(Node* n) {
         if (n != nullptr) {
-            DestructorIterator(n->left);
-            DestructorIterator(n->right);
+            destructorIterator(n->left);
+            destructorIterator(n->right);
             delete n;
         }
     }
 
-    static bool isEqualLeafBlackCount(Node* n, int* count) {
+    bool isEqualBlackLengthIterator(Node* n, int *count) {
         if (n == nullptr) {
+            (*count)++;
             return true;
         }
-        if (n->color == Node::Black) {
-            count++;
+        int left_count = 0;
+        int right_count = 0;
+        bool is_left_equal;
+        bool is_right_equal;
+        is_left_equal = isEqualBlackLengthIterator(n->left, &left_count);
+        if (is_left_equal) {
+            is_right_equal = isEqualBlackLengthIterator(n->right, &right_count);
         }
-        if (isLeaf(n)) {
-            return true;
-        }
-        int l_count = 0;
-        int r_count = 0;
-        bool l_res;
-        bool r_res;
-        l_res = isEqualLeafBlackCount(n->left, &l_count);
-        r_res = isEqualLeafBlackCount(n->right, &r_count);
-        return (l_res && r_res && (l_count == r_count) );
+        return is_left_equal && is_right_equal && left_count == right_count;
     }
 
-    static bool isLeaf (Node* n) {
-        return n != nullptr && n->left == nullptr && n->right == nullptr;
+    bool isEqualBlackLength(Node* n) {
+        int count = 0;
+        return isEqualBlackLengthIterator(n, &count);
     }
 
-    bool CorrectIterator (Node* n, Node* parent, int black_count) {
+    bool correctIterator(Node* n, Node* parent) {
         bool ret = true;
         if (n != nullptr) {
-            if (ret && (n->left != nullptr)) {
-                ret = n->left->key < n->key;
-            }
-            if (ret && (n->right != nullptr)) {
-                ret = n->key < n->right->key;
-            }
-
-            if ( n == Head || isLeaf(n) ) {
-                ret = n->color == Node::Black;
-            }
-
-            if (ret && (n->color == Node::Red && n != Head)) {
-                ret = parent->color == Node::Black;
-            }
-
-            if (ret && !isLeaf(n) ) {
-                int count;
-                ret = isEqualLeafBlackCount(n, &count);
-            }
-
+            ret = n->left == nullptr || n->left->key < n->key;
             if (ret) {
-                ret = CorrectIterator(n->right, n, black_count);
+                ret = n->right == nullptr || n->right->key > n->key;
             }
             if (ret) {
-                ret = CorrectIterator(n->left, n, black_count);
+                ret = isEqualBlackLength(n);
+            }
+            if (ret && n->color == Node::Red) {
+                ret = parent != nullptr && parent->color == Node::Black;
+            }
+            if (ret) {
+                bool l;
+                bool r = false;
+                l = correctIterator(n->left, n);
+                if (l) {
+                    r = correctIterator(n->right, n);
+                }
+                return r && l;
             }
         }
         return ret;
     }
 
 public:
-
     Node* Head;
 
-    bool isCorrect () {
-        return CorrectIterator(Head, nullptr, 0);
+    bool isCorrect() {
+        return correctIterator(Head, nullptr);
     }
-
     ColoredBinaryTree() {
         Head = nullptr;
     }
-
 };
 
 int main() {
@@ -112,43 +96,39 @@ int main() {
     }
     std::cin >> root_index;
     Node* nodes = new Node[nodes_count];
-    for (int i = 0; i < nodes_count; ++i) {
+    for (int index_of_arr = 0; index_of_arr < nodes_count; ++index_of_arr) {
         std::cin >> node_index;
         std::cin >> nodes[node_index - 1].key;
         std::cin >> input;
         if (input == "null") {
             nodes[node_index - 1].left = nullptr;
-        }
-        else {
+        } else {
             nodes[node_index - 1].left = &nodes[std::stoi(input) - 1];
         }
         std::cin >> input;
         if (input == "null") {
             nodes[node_index - 1].right = nullptr;
-        }
-        else {
+        } else {
             nodes[node_index - 1].right = &nodes[std::stoi(input) - 1];
         }
         std::cin >> color;
         switch (color) {
-            case 'R' :
+            case 'R':
                 nodes[node_index - 1].color = Node::Red;
                 break;
-            case 'B' :
+            case 'B':
                 nodes[node_index - 1].color = Node::Black;
                 break;
-            default :
+            default:
                 std::cout << "NO\n";
                 return 0;
         }
     }
-
     ColoredBinaryTree tree;
     tree.Head = &nodes[root_index - 1];
     if (tree.isCorrect()) {
         std::cout << "YES";
-    }
-    else {
+    } else {
         std::cout << "NO";
     }
     delete[] nodes;
