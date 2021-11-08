@@ -38,6 +38,12 @@ protected:
         if (is_left_equal) {
             is_right_equal = isEqualBlackLengthIterator(n->right, &right_count);
         }
+        if (left_count == right_count && n->color == Node::Black) {
+            (*count) = left_count + 1;
+        } else if (left_count == right_count && n->color != Node::Black) {
+            (*count) = left_count;
+        }
+
         return is_left_equal && is_right_equal && left_count == right_count;
     }
 
