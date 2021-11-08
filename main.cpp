@@ -52,12 +52,46 @@ protected:
         return isEqualBlackLengthIterator(n, &count);
     }
 
+    bool isLeftLessIterator(Node* n, int value) {
+        if (n != nullptr) {
+            bool less_value;
+            bool less_current = false;
+            less_value = isLeftLessIterator(n->left, value);
+            if (less_value) {
+                less_current = isLeftLessIterator(n->left, n->key);
+            }
+            return less_value && less_current;
+        }
+        return true;
+    }
+
+    bool isLeftLess(Node* n) {
+        return isLeftLessIterator(n, n->key);
+    }
+
+    bool isRightGreaterIterator(Node *n, int value) {
+        if (n != nullptr) {
+            bool greater_value;
+            bool greater_current = false;
+            greater_value = isRightGreaterIterator(n->right, value);
+            if (greater_value) {
+                greater_current = isRightGreaterIterator(n->right, n->key);
+            }
+            return greater_value && greater_current;
+        }
+        return true;
+    }
+
+    bool isRightGreater(Node *n) {
+        return isRightGreaterIterator(n, n->key);
+    }
+
     bool correctIterator(Node* n, Node* parent) {
         bool ret = true;
         if (n != nullptr) {
-            ret = n->left == nullptr || n->left->key < n->key;
+            ret = isLeftLess(n);
             if (ret) {
-                ret = n->right == nullptr || n->right->key > n->key;
+                ret = isRightGreater(n);
             }
             if (ret) {
                 ret = isEqualBlackLength(n);
