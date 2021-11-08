@@ -29,7 +29,7 @@ protected:
         }
     }
 
-    static bool isEqualLeafBlackCount(Node* n, int &count) {
+    static bool isEqualLeafBlackCount(Node* n, int* count) {
         if (n == nullptr) {
             return true;
         }
@@ -43,8 +43,8 @@ protected:
         int r_count = 0;
         bool l_res;
         bool r_res;
-        l_res = isEqualLeafBlackCount(n->left, l_count);
-        r_res = isEqualLeafBlackCount(n->right, r_count);
+        l_res = isEqualLeafBlackCount(n->left, &l_count);
+        r_res = isEqualLeafBlackCount(n->right, &r_count);
         return (l_res && r_res && (l_count == r_count) );
     }
 
@@ -72,7 +72,7 @@ protected:
 
             if (ret && !isLeaf(n) ) {
                 int count;
-                ret = isEqualLeafBlackCount(n, count);
+                ret = isEqualLeafBlackCount(n, &count);
             }
 
             if (ret) {
